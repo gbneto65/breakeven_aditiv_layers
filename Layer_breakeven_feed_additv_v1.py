@@ -2,6 +2,7 @@
 # Breakeven - Layers - V - beta .95
 # with graph interfacce -Oct. 23th 2020
 # tringular density function
+
 import os
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
@@ -10,13 +11,19 @@ import statistics as st
 import time
 import numpy as np
 from tkinter import *
+#import tkinter as tk
+from PIL import ImageTk, Image
+#from tkinter.ttk import *
+
 
 # definition of screen parameters
-screen_x = int(500)
-screen_y = int(400)
-x_pos = int(50)
+screen_x = int(380) # initial screen size
+screen_y = int(290)
+
+x_pos = int(10) # position of the labels / fields
 y_pos = int(50)
-entry_char= int(10)
+
+entry_char= int(10) # size of the entry fields
 
 # -------------------------------------------------------------
 # ------------------ input parameters -------------------------
@@ -65,33 +72,33 @@ def run_simul() :
     global inputed_egg_improv
     inputed_egg_improv = float(scr_egg_improv.get())
     scr_egg_improv_box.delete(0,END)
-
-    
+ 
     period_weeks = [100]
     #print(inputed_egg_prod_min)
     eggs_hen_total = [inputed_egg_prod_min, inputed_egg_prod_max, inputed_egg_prod_mp]  # min , max & MP
     print(eggs_hen_total)
     feed_price = [300, 500, 450]  # $$$ - min , max & MP
     
-    egg_price_100un = [inputed_egg_price_min, \
-                       inputed_egg_price_max, \
+    egg_price_100un = [inputed_egg_price_min,
+                       inputed_egg_price_max,
                        inputed_egg_price_mp]  # % values
     
     addit_price_kg = [inputed_scr_adit_price]  # $$$ / kg of feed aditive
     inclusion_ton = [inputed_scr_aditiv_incl]  # kg / ton of feed
     
-    feed_cons_day = [.1]  # 100g / day / hen
-    case_name = "customer_name"  # customer name
+    feed_cons_day = [.105]  # 100g / day / hen
+    #case_name = "customer_name"  # customer name
     savefigurepath = os.path.dirname(os.path.realpath(__file__))
     
     # savefigurepath = "/Users/Usuario/Desktop/python/" # folder path to store the chart figure (output)
     savefigurefilename = "/layer_case_"  # name of the file of the output
-    graph_dpi = 200  # resolution of chart in dpi
+    graph_dpi = 140  # resolution of chart in dpi
     
-    egg_production_improvement = [inputed_egg_improv / 100]  # (%) expected improvement with probiotc
+    
+    egg_production_improvement = inputed_egg_improv  # (%) expected improvement with probiotc
     breakevenprob_profit_percent = 75  # (%) - probability of the break-even from up is considered profitable area (number from 0 to 100)
     
-    n = 20000  # number of repetitions - ideal 10K or more
+    n = 30000  # number of repetitions - ideal 10K or more
     
     ##################################################################
     # facecolor_chart = '#E0E0E0'
@@ -107,8 +114,8 @@ def run_simul() :
     profitable_msn = "Profitable Region"
     
     todaysdate = time.strftime("%d/%m/%Y")
-    egg_produ_improv = egg_production_improvement[0]
-    egg_improv = egg_production_improvement[0]
+    #egg_produ_improv = egg_production_improvement
+    #egg_improv = egg_production_improvement
     
     x_period_weeks = []
     x_eggs_hen_total = []
@@ -129,23 +136,20 @@ def run_simul() :
        r = period_weeks[0]
        x_period_weeks.append(r)
     
+    
     for i in range(0, n):
         r = rd.triangular(eggs_hen_total[0],
                           eggs_hen_total[1],
                           eggs_hen_total[2])
         x_eggs_hen_total.append(round(r, 0))
-    
-    
+   
     for i in range(0, n):
         r = rd.triangular(feed_price[0],
                           feed_price[1],
                           feed_price[2])
         x_feed_price.append(r)
     
-    for i in range(0, n):
-        r = eggs_hen_total[0]
-        x_eggs_hen_total.append(r)
-    
+   
     for i in range(0, n):
         r = addit_price_kg[0]
         x_addit_price_kg.append(r)
@@ -169,9 +173,9 @@ def run_simul() :
     for i in range(0, n):
         r = x_period_weeks[i] * 7
         days_total.append(r)
-    
+   
     for i in range(0, n):
-        r = x_feed_cons_day[i] * 100 * 7
+        r = x_feed_cons_day[i] * 7 * 100
         vol_feed_hen.append(r)
     
     for i in range(0, n):
@@ -196,16 +200,18 @@ def run_simul() :
         r = cost_addit_hen[i] / egg_price_un[i]
         addit_eggs.append(r)
     
-        breakeven = []
-        egg_production_improv = []
+    #print(addit_eggs)
+    breakeven = []
+    egg_production_improv = []
     
     for i in range(0, n):
         r = addit_eggs[i] / x_eggs_hen_total[i] * 100
         breakeven.append(r)
-    
+        
     for i in range(0, n):
-        r = egg_production_improvement[0]
+        r = egg_production_improvement
         egg_production_improv.append(r)
+    print('egg improv ' + str(egg_production_improv[0]))
     
     count = 0
     for i in range(0, n):
@@ -246,25 +252,31 @@ def run_simul() :
     ax1.set_facecolor(facecolor_chart)
     xmin, xmax, ymin, ymax = ax1.axis()
     
-    if xmin >= egg_improv:
-        egg_improv = xmin
+    if xmin >= inputed_egg_improv:
+        inputed_egg_improv = xmin
         profitable_msn = ''
     
-    if xmax <= egg_improv:
-        xmax = egg_improv
+    if xmax <= inputed_egg_improv:
+        xmax = inputed_egg_improv
     
-    # ax1.axvline(egg_improv, color='g', linestyle='dashed', linewidth=2)
     ax1.axvline(st.median(breakeven), color='black', linestyle='dotted', linewidth=1, alpha=.7)
-    ax1.axvline((egg_production_improvement), color='r', linestyle='dashed', linewidth=2)
-    ax1.set_xlabel("Histogram of egg production for break-even (%)", fontsize=xaxis_font_size)
-    ax1.set_title("Likelilhood to be above break-even is: " + str(breakeven_likel) + " %", fontsize=12, fontweight='bold')
+    ax1.axvline((inputed_egg_improv), color='r', linestyle='dashed', linewidth=2)
+    ax1.set_xlabel("Histogram of egg production break-even (%)", fontsize=xaxis_font_size)
+    ax1.set_title("    In {} % of the time the break-even will be  overtaked".format(breakeven_likel),
+                  fontsize=9,
+                  fontweight='bold',
+                  )
     
     # paint the background
-    ax1.axvspan(xmin, egg_improv, facecolor=background_chart_color_profit,
+    ax1.axvspan(xmin, inputed_egg_improv, facecolor=background_chart_color_profit,
                 alpha=background_chart_color_alpha)  # background color
-    ax1.axvspan(egg_improv, xmax, facecolor=background_chart_color_nonprofit,
+    ax1.axvspan(inputed_egg_improv, xmax, facecolor=background_chart_color_nonprofit,
                 alpha=background_chart_color_alpha)  # background color
-    ax1.text((egg_improv - xmin) - .05, (ymax + ymin) / 2, profitable_msn, fontsize=7, fontweight='bold')
+    ax1.text((inputed_egg_improv - xmin)/1.5,
+             (ymax + ymin) / 2,
+             profitable_msn,
+             fontsize=7,
+             fontweight='bold')
     ax1.set_ylabel("Freq (n) ", fontsize=yaxis_font_size)
     
     # ----------- Boxplot -----------------------------
@@ -274,35 +286,53 @@ def run_simul() :
     
     xmin2, xmax2, ymin2, ymax2 = ax2.axis()
     
-    if ymax2 <= egg_improv:
-        ymax2 = egg_improv
+    if ymax2 <= inputed_egg_improv:
+        ymax2 = inputed_egg_improv
     
-    if xmax2 >= egg_improv:
-        xmax2 = egg_improv
+    if xmax2 >= inputed_egg_improv:
+        xmax2 = inputed_egg_improv
         profitable_msn = ''
-    
+    #print(egg_production_improvement)
     ax2.set_ylabel("Egg prod. improv for breakeven (%) ", fontsize=yaxis_font_size)
     ax2.set_xlabel("Boxplot", fontsize=xaxis_font_size)
     # ax2.axhline(y=egg_improv, color="g", linestyle="dashed", linewidth=2)
-    ax2.axhline((egg_production_improvement), color='r', linestyle='dashed', linewidth=2)
+    ax2.axhline((inputed_egg_improv), color='r', linestyle='dashed', linewidth=2)
     
-    ax2.axhspan(ymin2, egg_improv, facecolor=background_chart_color_profit,
+    ax2.axhspan(ymin2, inputed_egg_improv, facecolor=background_chart_color_profit,
                 alpha=background_chart_color_alpha)  # background color
-    ax2.axhspan(egg_improv, ymax2, facecolor=background_chart_color_nonprofit,
+    ax2.axhspan(inputed_egg_improv, ymax2, facecolor=background_chart_color_nonprofit,
                 alpha=background_chart_color_alpha)  # background color
     
-    ax2.text(1.2, egg_improv + 0.005, 'Feed additiv benefit ', fontsize=7)
-    ax2.text(.6, (egg_improv + ymin2) / 2.1, profitable_msn, fontsize=7, fontweight='bold')
+    ax2.text(1.2, inputed_egg_improv + 0.005, 'Feed additiv benefit ', fontsize=7)
+    ax2.text(.6, (inputed_egg_improv + ymin2) / 2.1, profitable_msn, fontsize=7, fontweight='bold')
     fig.suptitle("Layer break-even  for  " + str(inputed_scr_farm_ident) + str(" - ") + str(todaysdate) + "\n" +
-                 "Each hen should produce on average +" + str(round(st.median(addit_eggs), 1)) + " eggs in 700 days to be profitable", fontsize=10)
+                 "Each hen should produce, at least, " + str(round(st.median(addit_eggs), 1)) + " eggs in 700 days to be profitable", fontsize=10)
     
-    plt.savefig(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".png", dpi=graph_dpi)
+    plt.savefig(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg", dpi=graph_dpi)
     plt.show()
     
+    
+    #screen.destroy() # close input window
+    screen2 = Toplevel(screen) 
+  
+    # sets the title of the 
+    # Toplevel widget 
+    
+    w, h = screen2.winfo_screenwidth(), screen2.winfo_screenheight()
+    screen2.geometry("%dx%d+0+0" % (w, h))
+    screen2.title('Output')
+    img = Image.open(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg")
+    photo=ImageTk.PhotoImage(img)
+    lab=Label(screen2,image=photo).pack()
+    text = Label(screen2, text="This chart was saved as jpg at : {}\ ".format(savefigurepath))
+    text.place(x = w/2.2,
+               y= h/ 1.23)
+    
+    screen2.mainloop()
+   
 
-
-
-
+       
+    
 
 
 
@@ -314,8 +344,10 @@ screen = Tk()
 
 screen.title("Break-Even Estimator for feed aditives - Egg Producers")
 screen.geometry('{}x{}'.format(screen_x,screen_y))
-lbl_descrip = Label(screen, text = 'Input the data')
-lbl_descrip.place(x = x_pos, y = y_pos)
+lbl_descrip = Label(screen, text = 'Data Input',
+                    fg="blue", font=(None, 10))
+lbl_descrip.place(x = screen_x/2 - 40, y = screen_y*.01)
+
 
 lbl_case = Label(screen, text = 'Farm ident :')
 lbl_case.place(x = x_pos, y = y_pos - 20)
@@ -329,11 +361,11 @@ lbl_egg_prod.place(x = x_pos, y = y_pos + 60)
 lbl_adit_price = Label(screen, text = 'Feed Aditiv. Price (kg) :')
 lbl_adit_price.place(x = x_pos, y = y_pos + 100)
 
-lbl_adit_incl = Label(screen, text = 'Feed Aditiv. / ton (g) :')
+lbl_adit_incl = Label(screen, text = 'Feed Aditiv. / ton (kg) :')
 lbl_adit_incl.place(x = x_pos, y = y_pos + 120)
 
-lbl_egg_improv = Label(screen, text = 'Improv.egg with aditiv. :')
-lbl_egg_improv.place(x = x_pos, y = y_pos + 140)
+lbl_egg_improv = Label(screen, text = 'Improv.egg with aditiv.:')
+lbl_egg_improv.place(x = x_pos, y = y_pos + 160)
 
 ##### min   max  mode #####
 
@@ -347,56 +379,64 @@ lbl_egg_improv = Label(screen, text = 'mode')
 lbl_egg_improv.place(x = x_pos + 130 + 80 + 80 + entry_char/1.5, y = y_pos + 20)
 
 ##########################
+
+lbl_egg_improv = Label(screen, text = 'guilherme borchardt - October, 2020',
+                       fg="gray", font=(None, 7))
+lbl_egg_improv.place(x = screen_x-170, y = screen_y -20)
+
+
 # variables
 
-scr_farm_ident = StringVar()
+scr_farm_ident = StringVar(screen, value='test')
 scr_farm_box = Entry(textvariable = scr_farm_ident, width=entry_char + 5)
 scr_farm_box.place(x = x_pos + 133 , y = y_pos - 20)
 
-scr_egg_price_min = StringVar()
+
+scr_egg_price_min = StringVar(screen, value='20')
 scr_egg_price_box_min = Entry(textvariable = scr_egg_price_min,  width=entry_char)
 scr_egg_price_box_min.place(x = x_pos + 133, y = y_pos + 40)
 
-scr_egg_price_max = StringVar()
+scr_egg_price_max = StringVar(screen, value='40')
 scr_egg_price_box_max = Entry(textvariable = scr_egg_price_max,  width=entry_char)
 scr_egg_price_box_max.place(x = x_pos + 133 + 78, y = y_pos + 40)
 
-scr_egg_price_mp = StringVar()
+scr_egg_price_mp = StringVar(screen, value='30')
 scr_egg_price_box_mp = Entry(textvariable = scr_egg_price_mp,  width=entry_char)
 scr_egg_price_box_mp.place(x = x_pos + 133 + 78 + 78, y = y_pos + 40)
 
-scr_egg_prod_min = StringVar()
+scr_egg_prod_min = StringVar(screen, value='400')
 scr_egg_prod_box_min = Entry(textvariable = scr_egg_prod_min, width=entry_char)
 scr_egg_prod_box_min.place(x = x_pos + 133, y = y_pos + 60)
 
-scr_egg_prod_max = StringVar()
+scr_egg_prod_max = StringVar(screen, value='500')
 scr_egg_prod_box_max = Entry(textvariable = scr_egg_prod_max, width=entry_char)
 scr_egg_prod_box_max.place(x = x_pos + 133 + 78, y = y_pos + 60)
 
-scr_egg_prod_mp = StringVar()
+scr_egg_prod_mp = StringVar(screen, value='460')
 scr_egg_prod_box_mp = Entry(textvariable = scr_egg_prod_mp, width=entry_char)
 scr_egg_prod_box_mp.place(x = x_pos + 133 + 78 + 78, y = y_pos + 60)
 
 
-scr_adit_price = StringVar()
+scr_adit_price = StringVar(screen, value='15')
 scr_adit_price_box = Entry(textvariable = scr_adit_price, width=entry_char)
 scr_adit_price_box.place(x = x_pos + 133, y = y_pos + 100)
 
-scr_aditiv_incl = StringVar()
+scr_aditiv_incl = StringVar(screen, value='.5')
 scr_aditiv_incl_box = Entry(textvariable = scr_aditiv_incl, width=entry_char)
 scr_aditiv_incl_box.place(x = x_pos + 133, y = y_pos + 120)
 
-scr_egg_improv = StringVar()
+scr_egg_improv = StringVar(screen, value='3')
 scr_egg_improv_box = Entry(textvariable = scr_egg_improv, width=entry_char)
 scr_egg_improv_box.place(x = x_pos + 133, y = y_pos + 160)
 
 run_button = Button(screen, text='*** Run ***', command = run_simul)
-run_button.place(x = x_pos, y = y_pos+200)
+run_button.place(x = screen_x/2 - 40, y = y_pos+190)
 
 screen.mainloop()
 
 
 # --------------------------------------------------------------------
+
 
 
 
