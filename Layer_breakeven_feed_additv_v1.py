@@ -325,8 +325,8 @@ def run_simul() :
     photo=ImageTk.PhotoImage(img)
     lab=Label(screen2,image=photo).pack()
     text = Label(screen2, text="This chart was saved as jpg at : {}\ ".format(savefigurepath))
-    text.place(x = w/2.2,
-               y= h/ 1.23)
+    text.place(x = w/3,
+               y= h/ 1.12)
     
     screen2.mainloop()
    
@@ -341,7 +341,7 @@ def run_simul() :
 screen = Tk()
 
 ## Screen Labels
-
+screen.eval('tk::PlaceWindow . left')
 screen.title("Break-Even Estimator for feed aditives - Egg Producers")
 screen.geometry('{}x{}'.format(screen_x,screen_y))
 lbl_descrip = Label(screen, text = 'Data Input',
@@ -380,7 +380,7 @@ lbl_egg_improv.place(x = x_pos + 130 + 80 + 80 + entry_char/1.5, y = y_pos + 20)
 
 ##########################
 
-lbl_egg_improv = Label(screen, text = 'guilherme borchardt - October, 2020',
+lbl_egg_improv = Label(screen, text = 'Trikky - Beta 1 - October, 2020',
                        fg="gray", font=(None, 7))
 lbl_egg_improv.place(x = screen_x-170, y = screen_y -20)
 
