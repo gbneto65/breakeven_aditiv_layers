@@ -15,7 +15,8 @@ from tkinter import *
 from PIL import ImageTk, Image
 #from tkinter.ttk import *
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
+import warnings
+warnings.filterwarnings("ignore", "(?s).*MATPLOTLIBDATA.*", category=UserWarning)
 
 
 
