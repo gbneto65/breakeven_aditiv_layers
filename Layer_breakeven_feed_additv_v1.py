@@ -20,8 +20,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 # definition of screen parameters
-screen_x = int(380) # initial screen size
-screen_y = int(290)
+screen_x = int(380) # initial screen size380 / 290
+screen_y = int(300)
 
 x_pos = int(10) # position of the labels / fields
 y_pos = int(50)
@@ -245,7 +245,7 @@ def run_simul() :
     """
     # charts
     # ------------------------------------------
-    fig = plt.figure(figsize=(10, 8), dpi=160)
+    fig = plt.figure(figsize=(10,8), dpi=150)
     fig.patch.set_facecolor(facecolor_chart)
     fig.patch.set_alpha(0.7)
     gs = GridSpec(nrows=1, ncols=2)
@@ -316,18 +316,17 @@ def run_simul() :
 
     fig.suptitle("Layer break-even  for  " + str(inputed_scr_farm_ident) + str(" - ") + str(todaysdate) + "\n" +
                  "Each hen should produce, at least, +" + str(round(st.median(addit_eggs), 1)) + " eggs in 700 days to be profitable\n", fontsize=10)
+    # screen.state('zoomed')
 
-
-        #plt.savefig(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg", dpi=graph_dpi)
+    plt.savefig(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg", dpi=graph_dpi)
     #plt.show()
 
-    #screen.destroy() # close input window
     screen2 = Toplevel(screen)
     screen2.state('zoomed')
     #w, h = screen2.winfo_screenwidth(), screen2.winfo_screenheight()
     #screen2.geometry('w,h')
     screen2.geometry("1200x800")
-    screen2.title('Chart Output')
+    screen2.title('Break-Even Estimator for Layers - Graph Output')
     chart = FigureCanvasTkAgg(fig, screen2)
     chart.get_tk_widget().pack()
     #text = Label(screen2, text="This chart was saved as jpg at : {}\ ".format(savefigurepath))
@@ -339,6 +338,11 @@ def run_simul() :
 screen = Tk()
 ## Screen Labels
 #TK.attributes("-fullscreen", False)
+
+img = ImageTk.PhotoImage(Image.open('layer_icon2.png'))
+panel = Label(screen, image = img)
+panel.place(x=screen_x-100, y=screen_y*.03)
+
 screen.eval('tk::PlaceWindow . center')
 screen.title("Break-Even Estimator - Layers")
 
@@ -383,7 +387,7 @@ lbl_egg_improv.place(x = x_pos + 130 + 80 + 80 + entry_char/1.5, y = y_pos + 20)
 
 lbl_egg_improv = Label(screen, text = 'G. Borchardt - Beta 0.8 - October, 2020',
                        fg="gray", font=(None, 7))
-lbl_egg_improv.place(x = screen_x-190, y = screen_y -20)
+lbl_egg_improv.place(x = screen_x-180, y = screen_y -20)
 
 lbl_egg_improv = Label(screen, text = 'Run {} K. repetitions'.format(n/1000),
                        fg="gray", font=(None, 7))
@@ -424,7 +428,7 @@ scr_egg_prod_box_mp.place(x = x_pos + 133 + 78 + 78, y = y_pos + 60)
 
 scr_adit_price = StringVar(screen, value='15')
 scr_adit_price_box = Entry(textvariable = scr_adit_price, width=entry_char)
-scr_adit_price_box.place(x = x_pos + 133, y = y_pos + 100)
+scr_adit_price_box.place(x = x_pos + 133, y = y_pos +100)
 
 scr_aditiv_incl = StringVar(screen, value='.5')
 scr_aditiv_incl_box = Entry(textvariable = scr_aditiv_incl, width=entry_char)
@@ -435,7 +439,7 @@ scr_egg_improv_box = Entry(textvariable = scr_egg_improv, width=entry_char)
 scr_egg_improv_box.place(x = x_pos + 133, y = y_pos + 160)
 
 run_button = Button(screen, text='  Run  ', command = run_simul)
-run_button.place(x = screen_x/2 + 70, y = screen_y/2 + 35)
+run_button.place(x = screen_x/2 + 75, y = screen_y/2 + 40)
 
 screen.mainloop()
 
