@@ -14,7 +14,7 @@ from tkinter import *
 #import tkinter as tk
 from PIL import ImageTk, Image
 #from tkinter.ttk import *
-
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 
@@ -95,7 +95,7 @@ def run_simul() :
     
     # savefigurepath = "/Users/Usuario/Desktop/python/" # folder path to store the chart figure (output)
     savefigurefilename = "/layer_case_"  # name of the file of the output
-    graph_dpi = 160  # resolution of chart in dpi
+    graph_dpi = 100  # resolution of chart in dpi
     
     
     egg_production_improvement = inputed_egg_improv  # (%) expected improvement with probiotc
@@ -245,7 +245,7 @@ def run_simul() :
     """
     # charts
     # ------------------------------------------
-    fig = plt.figure(figsize=(10, 7))
+    fig = plt.figure(figsize=(10, 8), dpi=160)
     fig.patch.set_facecolor(facecolor_chart)
     fig.patch.set_alpha(0.7)
     gs = GridSpec(nrows=1, ncols=2)
@@ -315,30 +315,30 @@ def run_simul() :
         ax2.text(.6, (inputed_egg_improv + ymin2) / 2.1, profitable_msn, fontsize=7, fontweight='bold')
 
     fig.suptitle("Layer break-even  for  " + str(inputed_scr_farm_ident) + str(" - ") + str(todaysdate) + "\n" +
-                 "Each hen should produce, at least, +" + str(round(st.median(addit_eggs), 1)) + " eggs in 700 days to be profitable", fontsize=10)
-    
-    #plt.savefig(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg", dpi=graph_dpi)
-    plt.show()
-    
-    """    #screen.destroy() # close input window
-    screen2 = Toplevel(screen)
+                 "Each hen should produce, at least, +" + str(round(st.median(addit_eggs), 1)) + " eggs in 700 days to be profitable\n", fontsize=10)
 
-    w, h = screen2.winfo_screenwidth(), screen2.winfo_screenheight()
+
+        #plt.savefig(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg", dpi=graph_dpi)
+    #plt.show()
+
+    #screen.destroy() # close input window
+    screen2 = Toplevel(screen)
+    screen2.state('zoomed')
+    #w, h = screen2.winfo_screenwidth(), screen2.winfo_screenheight()
     #screen2.geometry('w,h')
-    screen2.geometry("%dx%d+0+0" % (w, h))
+    screen2.geometry("1200x800")
     screen2.title('Chart Output')
-    img = Image.open(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg")
-    photo=ImageTk.PhotoImage(img)
-    lab=Label(screen2,image=photo).pack()
-    text = Label(screen2, text="This chart was saved as jpg at : {}\ ".format(savefigurepath))
-    text.place(x = w/3,
-               y= h/ 1.1)
+    chart = FigureCanvasTkAgg(fig, screen2)
+    chart.get_tk_widget().pack()
+    #text = Label(screen2, text="This chart was saved as jpg at : {}\ ".format(savefigurepath))
+    #text.place(x = 750,
+    #           y= 780)
     screen2.mainloop()
-    """
 
 
 screen = Tk()
 ## Screen Labels
+#TK.attributes("-fullscreen", False)
 screen.eval('tk::PlaceWindow . center')
 screen.title("Break-Even Estimator - Layers")
 
