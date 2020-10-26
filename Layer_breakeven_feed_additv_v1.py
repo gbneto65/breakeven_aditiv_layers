@@ -16,6 +16,9 @@ from PIL import ImageTk, Image
 #from tkinter.ttk import *
 
 
+
+
+
 # definition of screen parameters
 screen_x = int(380) # initial screen size
 screen_y = int(290)
@@ -31,52 +34,51 @@ entry_char= int(10) # size of the entry fields
 # define input variables - sequence: min, max, most probably
 #
 
-
 def run_simul() :
     global inputed_scr_farm_ident
     inputed_scr_farm_ident = str(scr_farm_ident.get())
-    scr_farm_box.delete(0,END)
+    #scr_farm_box.delete(0,END)
 
     global inputed_egg_price_min
     inputed_egg_price_min = float(scr_egg_price_min.get())
-    scr_egg_price_box_min.delete(0,END)
+    #scr_egg_price_box_min.delete(0,END)
     
     global inputed_egg_price_max
     inputed_egg_price_max = float(scr_egg_price_max.get())
-    scr_egg_price_box_max.delete(0,END)
+    #scr_egg_price_box_max.delete(0,END)
 
     global inputed_egg_price_mp
     inputed_egg_price_mp = float(scr_egg_price_mp.get())
-    scr_egg_price_box_mp.delete(0,END)
+    #scr_egg_price_box_mp.delete(0,END)
     
     global inputed_egg_prod_min
     inputed_egg_prod_min = float(scr_egg_prod_min.get())
-    scr_egg_prod_box_min.delete(0,END)
+    #scr_egg_prod_box_min.delete(0,END)
 
     global inputed_egg_prod_max
     inputed_egg_prod_max = float(scr_egg_prod_max.get())
-    scr_egg_prod_box_max.delete(0,END)
+    #scr_egg_prod_box_max.delete(0,END)
 
     global inputed_egg_prod_mp
     inputed_egg_prod_mp = float(scr_egg_prod_mp.get())
-    scr_egg_prod_box_mp.delete(0,END)
+    #scr_egg_prod_box_mp.delete(0,END)
     
     global inputed_scr_adit_price
     inputed_scr_adit_price = float(scr_adit_price.get())
-    scr_adit_price_box.delete(0,END)
+    #scr_adit_price_box.delete(0,END)
 
     global inputed_scr_aditiv_incl
     inputed_scr_aditiv_incl = float(scr_aditiv_incl.get())
-    scr_aditiv_incl_box.delete(0,END)
+    #scr_aditiv_incl_box.delete(0,END)
     
     global inputed_egg_improv
     inputed_egg_improv = float(scr_egg_improv.get())
-    scr_egg_improv_box.delete(0,END)
+    #scr_egg_improv_box.delete(0,END)
  
     period_weeks = [100]
     #print(inputed_egg_prod_min)
     eggs_hen_total = [inputed_egg_prod_min, inputed_egg_prod_max, inputed_egg_prod_mp]  # min , max & MP
-    print(eggs_hen_total)
+
     feed_price = [300, 500, 450]  # $$$ - min , max & MP
     
     egg_price_100un = [inputed_egg_price_min,
@@ -92,7 +94,7 @@ def run_simul() :
     
     # savefigurepath = "/Users/Usuario/Desktop/python/" # folder path to store the chart figure (output)
     savefigurefilename = "/layer_case_"  # name of the file of the output
-    graph_dpi = 140  # resolution of chart in dpi
+    graph_dpi = 160  # resolution of chart in dpi
     
     
     egg_production_improvement = inputed_egg_improv  # (%) expected improvement with probiotc
@@ -105,11 +107,11 @@ def run_simul() :
     facecolor_chart = '#ffffff'
     background_chart_color_profit = "#a8e6cf"
     background_chart_color_nonprofit = "#ffbaba"
-    background_chart_color_alpha = .4
+    background_chart_color_alpha = .5
     chart_alpha = .9
     
-    xaxis_font_size = 7
-    yaxis_font_size = 7
+    xaxis_font_size = 8
+    yaxis_font_size = 8
     
     profitable_msn = "Profitable Region"
     
@@ -221,6 +223,7 @@ def run_simul() :
     breakeven_profit_value = egg_production_improvement
     
     breakeven_likel = round(count / n * 100, 1)
+    """
     print()
     print("Summary Report".center(60, "-"))
     print(inputed_scr_farm_ident.center(60) + str(todaysdate))
@@ -238,7 +241,7 @@ def run_simul() :
     print("Likelilhood to be above break-even is: ", breakeven_likel, " %")
     print("")
     print("------------------- Trikky - v1.0 ----------------" + str(todaysdate))
-    
+    """
     # charts
     # ------------------------------------------
     fig = plt.figure(figsize=(10, 7))
@@ -303,47 +306,45 @@ def run_simul() :
     ax2.axhspan(inputed_egg_improv, ymax2, facecolor=background_chart_color_nonprofit,
                 alpha=background_chart_color_alpha)  # background color
     
-    ax2.text(1.2, inputed_egg_improv + 0.005, 'Feed additiv benefit ', fontsize=7)
-    ax2.text(.6, (inputed_egg_improv + ymin2) / 2.1, profitable_msn, fontsize=7, fontweight='bold')
+    ax2.text(1.2, inputed_egg_improv + 0.01, 'Feed additiv benefit ', fontsize=7)
+
+    if inputed_egg_improv <= ymin2 :
+        ax2.text(.6, (inputed_egg_improv + ymin2) / 2.1, '', fontsize=7, fontweight='bold')
+    else :
+        ax2.text(.6, (inputed_egg_improv + ymin2) / 2.1, profitable_msn, fontsize=7, fontweight='bold')
+
     fig.suptitle("Layer break-even  for  " + str(inputed_scr_farm_ident) + str(" - ") + str(todaysdate) + "\n" +
                  "Each hen should produce, at least, " + str(round(st.median(addit_eggs), 1)) + " eggs in 700 days to be profitable", fontsize=10)
     
     plt.savefig(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg", dpi=graph_dpi)
-    plt.show()
+    #plt.show()
     
     
     #screen.destroy() # close input window
-    screen2 = Toplevel(screen) 
-  
-    # sets the title of the 
-    # Toplevel widget 
-    
+    screen2 = Toplevel(screen)
+
     w, h = screen2.winfo_screenwidth(), screen2.winfo_screenheight()
+    #screen2.geometry('w,h')
     screen2.geometry("%dx%d+0+0" % (w, h))
-    screen2.title('Output')
+    screen2.title('Chart Output')
     img = Image.open(savefigurepath + str(savefigurefilename) + str(inputed_scr_farm_ident) + ".jpg")
     photo=ImageTk.PhotoImage(img)
     lab=Label(screen2,image=photo).pack()
     text = Label(screen2, text="This chart was saved as jpg at : {}\ ".format(savefigurepath))
     text.place(x = w/3,
-               y= h/ 1.12)
-    
+               y= h/ 1.1)
     screen2.mainloop()
-   
-
-       
-    
-
-
 
 
 
 screen = Tk()
-
 ## Screen Labels
-screen.eval('tk::PlaceWindow . left')
+screen.eval('tk::PlaceWindow . center')
 screen.title("Break-Even Estimator for feed aditives - Egg Producers")
-screen.geometry('{}x{}'.format(screen_x,screen_y))
+
+screen.geometry('{}x{}'.format(screen_x , screen_y ))
+
+
 lbl_descrip = Label(screen, text = 'Data Input',
                     fg="blue", font=(None, 10))
 lbl_descrip.place(x = screen_x/2 - 40, y = screen_y*.01)
