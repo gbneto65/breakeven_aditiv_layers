@@ -1,5 +1,5 @@
-# Guilherme - Jun 2019
-# Breakeven - Layers - V - beta .95
+# Guilherme - Jun 2020
+# Breakeven - Layers - V - beta .9
 # with graph interfacce -Oct. 23th 2020
 # tringular density function
 
@@ -17,15 +17,15 @@ from PIL import ImageTk, Image
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import warnings
 
-# warnings.filterwarnings("ignore", "(?s).*MATPLOTLIBDATA.*", category=UserWarning)
+warnings.filterwarnings("ignore", "(?s).*MATPLOTLIBDATA.*", category=UserWarning)
 
 
 # definition of screen parameters
-screen_x = int(380)  # initial screen size380 / 290
-screen_y = int(300)
+screen_x = int(480)  # initial screen size380 / 290
+screen_y = int(340)
 
-x_pos = int(10)  # position of the labels / fields
-y_pos = int(50)
+x_pos = int(40)  # position of the labels / fields x=40 Y=50
+y_pos = int(60)
 
 entry_char = int(10)  # size of the entry fields
 
@@ -254,7 +254,7 @@ def run_simul():
     ax1.set_facecolor(facecolor_chart)
     xmin, xmax, ymin, ymax = ax1.axis()
 
-    if xmin >= inputed_egg_improv:
+    if st.median(breakeven) >= inputed_egg_improv:
         inputed_egg_improv = xmin
         profitable_msn = ''
 
@@ -274,7 +274,8 @@ def run_simul():
                 alpha=background_chart_color_alpha)  # background color
     ax1.axvspan(inputed_egg_improv, xmax, facecolor=background_chart_color_nonprofit,
                 alpha=background_chart_color_alpha)  # background color
-    ax1.text((inputed_egg_improv - xmin) / 1.5,
+    
+    ax1.text((inputed_egg_improv - xmin) / 1.3,
              (ymax + ymin) / 2,
              profitable_msn,
              fontsize=7,
